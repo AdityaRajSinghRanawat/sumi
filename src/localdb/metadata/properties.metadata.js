@@ -1,0 +1,31 @@
+export const propertiesCollectionMetadata = {
+  name: "properties",
+  version: 1,
+  storageKey: "sumi.customProperties",
+  indexes: [
+    "id",
+    "region.id",
+    "price",
+    "stationDistance",
+    "earthquakeRisk",
+    "elevationIndex",
+  ],
+  fields: {
+    id: "string",
+    name: "string",
+    address: "string",
+    description: "string",
+    price: "number",
+    builtYear: "number",
+    lat: "number",
+    lng: "number",
+    stationDistance: "number",
+    layout: "string",
+    tags: "string[]",
+    nearby: {
+      schools: "number",
+      universities: "number",
+      hospitals: "number",
+    },
+  },
+};

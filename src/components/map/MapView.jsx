@@ -31,6 +31,7 @@ const MapView = ({
   amenitySourceProperties,
   selectedProperty,
   filters,
+  exploreStateSnapshot,
   showMapFilters,
   priceBounds,
   onFilterChange,
@@ -71,6 +72,7 @@ const MapView = ({
         {properties.length > 0 && (
           <PropertyLayer
             properties={properties}
+            exploreStateSnapshot={exploreStateSnapshot}
             selectedProperty={selectedProperty}
             onSelectProperty={onSelectProperty}
           />
@@ -79,6 +81,7 @@ const MapView = ({
         {amenitySourceProperties.length > 0 && (
           <AmenityLayer
             properties={amenitySourceProperties}
+            exploreStateSnapshot={exploreStateSnapshot}
             selectedPrefecture={selectedPrefecture}
             filters={filters}
           />

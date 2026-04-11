@@ -15,7 +15,17 @@ const formatPinPrice = (amount) => {
   return `¥${amount}`;
 };
 
-const PropertyLayer = ({ properties, selectedProperty, onSelectProperty }) => {
+const PropertyLayer = ({ properties, exploreStateSnapshot, selectedProperty, onSelectProperty }) => {
+  const openProperty = (property) => {
+    try {
+      localStorage.setItem(`sumi.propertyCache.${property.id}`, JSON.stringify(property));
+    } catch {
+      // Ignore storage quota/private mode issues and still attempt navigation.
+    }
+
+    window.open(`/property/${property.id}`, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <>
       {properties.map((property) => {
@@ -53,7 +63,18 @@ const PropertyLayer = ({ properties, selectedProperty, onSelectProperty }) => {
             )}
 
             <Popup className="sumi-property-popup" autoPan closeButton>
-              <div className="sumi-popup-card">
+              <div
+                className="sumi-popup-card cursor-pointer"
+                role="button"
+                tabIndex={0}
+                onClick={() => openProperty(property)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openProperty(property);
+                  }
+                }}
+              >
                 <div className="sumi-popup-media">
                   <img
                     src={property.imageUrl}
@@ -94,6 +115,17 @@ const PropertyLayer = ({ properties, selectedProperty, onSelectProperty }) => {
                       </span>
                     ))}
                   </div>
+
+                  <button
+                    type="button"
+                    className="mt-2 inline-flex items-center rounded-full border border-zinc-600 bg-zinc-900/90 px-3 py-1 text-[11px] font-semibold text-zinc-100 transition hover:border-zinc-400"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openProperty(property);
+                    }}
+                  >
+                    Visit Property
+                  </button>
                 </div>
               </div>
             </Popup>

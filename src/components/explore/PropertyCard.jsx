@@ -7,8 +7,18 @@ const yen = new Intl.NumberFormat("ja-JP", {
   maximumFractionDigits: 0,
 });
 
-const PropertyCard = ({ property, isActive, onHover }) => {
+const PropertyCard = ({ property, exploreStateSnapshot, isActive, onHover }) => {
   const tags = property.tags?.slice(0, 2) || [];
+
+  const openProperty = () => {
+    try {
+      localStorage.setItem(`sumi.propertyCache.${property.id}`, JSON.stringify(property));
+    } catch {
+      // Ignore storage quota/private mode issues and still attempt navigation.
+    }
+
+    window.open(`/property/${property.id}`, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <article
@@ -19,6 +29,15 @@ const PropertyCard = ({ property, isActive, onHover }) => {
       }`}
       onMouseEnter={() => onHover(property.id)}
       onMouseLeave={() => onHover(null)}
+      onClick={openProperty}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openProperty();
+        }
+      }}
     >
       <div className="flex gap-3 p-2.5">
         <div className="relative w-24 shrink-0 overflow-hidden rounded-xl border border-zinc-700/70 bg-zinc-900 sm:w-28">

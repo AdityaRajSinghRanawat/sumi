@@ -281,9 +281,19 @@ const buildGenericAmenities = (properties, visibleTypes, ring, prefectureName) =
   return amenities;
 };
 
-const AmenityLayer = ({ properties, selectedPrefecture, filters }) => {
+const AmenityLayer = ({ properties, exploreStateSnapshot, selectedPrefecture, filters }) => {
   if (!selectedPrefecture) return null;
   const [selectedAmenityId, setSelectedAmenityId] = useState(null);
+
+  const openProperty = (property) => {
+    try {
+      localStorage.setItem(`sumi.propertyCache.${property.id}`, JSON.stringify(property));
+    } catch {
+      // Ignore storage quota/private mode issues and still attempt navigation.
+    }
+
+    window.open(`/property/${property.id}`, "_blank", "noopener,noreferrer");
+  };
 
   const selectedAmenityTypes = Object.entries(filters?.amenities || {})
     .filter(([, checked]) => checked)
@@ -341,7 +351,18 @@ const AmenityLayer = ({ properties, selectedPrefecture, filters }) => {
             </Tooltip>
 
             <Popup className="sumi-property-popup sumi-amenity-popup" autoPan closeButton>
-              <div className="sumi-popup-card sumi-popup-card-amenity">
+              <div
+                className="sumi-popup-card sumi-popup-card-amenity cursor-pointer"
+                role="button"
+                tabIndex={0}
+                onClick={() => openProperty(amenity.property)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openProperty(amenity.property);
+                  }
+                }}
+              >
                 <div className="sumi-popup-media">
                   <img
                     src={amenity.property.imageUrl}
@@ -376,6 +397,17 @@ const AmenityLayer = ({ properties, selectedPrefecture, filters }) => {
                       <span className="sumi-popup-metric">{amenity.property.layout}</span>
                     ) : null}
                   </div>
+
+                  <button
+                    type="button"
+                    className="mt-2 inline-flex items-center rounded-full border border-zinc-600 bg-zinc-900/90 px-3 py-1 text-[11px] font-semibold text-zinc-100 transition hover:border-zinc-400"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openProperty(amenity.property);
+                    }}
+                  >
+                    Visit Property
+                  </button>
                 </div>
               </div>
             </Popup>

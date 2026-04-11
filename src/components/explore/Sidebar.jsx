@@ -81,6 +81,7 @@ const Sidebar = ({
   selectedRegion,
   selectedPrefecture,
   properties,
+  exploreStateSnapshot,
   selectedProperty,
   onHoverProperty,
   filters,
@@ -551,6 +552,7 @@ const Sidebar = ({
                     <div key={property.id} className="min-w-0">
                       <PropertyCard
                         property={property}
+                        exploreStateSnapshot={exploreStateSnapshot}
                         isActive={selectedProperty === property.id}
                         onHover={onHoverProperty}
                       />

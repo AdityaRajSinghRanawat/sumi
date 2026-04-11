@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import "leaflet/dist/leaflet.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import MapView from "../components/map/MapView";
 import Sidebar from "../components/explore/Sidebar";
-import { seedProperties, STORAGE_KEY } from "../data/properties";
+import { getCustomPropertiesFromLocalStorage, getSeedProperties } from "../localdb";
 import { getRegionData } from "../data/regionData";
 import { assignRegionFromCoords } from "../utils/assignRegionFromCoords";
 import japanRegionsRaw from "../data/japanRegions.geojson?raw";
@@ -136,6 +136,7 @@ function samplePointsInsideRing(ring, count, seed) {
 
 function generateNationwideSeedProperties() {
   const generated = [];
+  const propertiesPerPrefecture = 3;
 
   japanRegions.features.forEach((feature, featureIndex) => {
     const ring = getLargestRingFromGeometry(feature.geometry);
@@ -143,7 +144,11 @@ function generateNationwideSeedProperties() {
 
     const prefectureId = feature.properties?.id;
     const prefectureName = feature.properties?.name || "Prefecture";
-    const positions = samplePointsInsideRing(ring, 2, 7000 + featureIndex * 31);
+    const positions = samplePointsInsideRing(
+      ring,
+      propertiesPerPrefecture,
+      7000 + featureIndex * 31,
+    );
 
     positions.forEach((position, index) => {
       const random = seededRandom(9000 + featureIndex * 67 + index * 13);
@@ -219,6 +224,7 @@ const defaultFilters = {
 };
 
 const ExplorePage = () => {
+  const location = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedPrefecture, setSelectedPrefecture] = useState(null);
@@ -230,11 +236,25 @@ const ExplorePage = () => {
   const [showMapFilters, setShowMapFilters] = useState(false);
 
   useEffect(() => {
-    const custom = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const custom = getCustomPropertiesFromLocalStorage();
+    const localSeedProperties = getSeedProperties();
     const nationwideSeedProperties = generateNationwideSeedProperties();
-    const merged = [...seedProperties, ...nationwideSeedProperties, ...custom].map(enrichProperty);
+    const merged = [...localSeedProperties, ...nationwideSeedProperties, ...custom].map(enrichProperty);
     setProperties(merged);
   }, []);
+
+  useEffect(() => {
+    const restore = location.state?.restoreExploreState;
+    if (!restore) return;
+
+    setCurrentStep(restore.currentStep ?? 1);
+    setSelectedRegion(restore.selectedRegion ?? null);
+    setSelectedPrefecture(restore.selectedPrefecture ?? null);
+    setSelectedProperty(restore.selectedProperty ?? null);
+    setFilters(restore.filters ?? defaultFilters);
+    setSortBy(restore.sortBy ?? "overallScore-desc");
+    setShowMapFilters(Boolean(restore.showMapFilters));
+  }, [location.state]);
 
   const regionProperties = useMemo(() => {
     if (!selectedRegion) {
@@ -324,18 +344,6 @@ const ExplorePage = () => {
         return false;
       }
 
-      if (filters.amenities.schools && !property.nearby?.schools) {
-        return false;
-      }
-
-      if (filters.amenities.universities && !property.nearby?.universities) {
-        return false;
-      }
-
-      if (filters.amenities.hospitals && !property.nearby?.hospitals) {
-        return false;
-      }
-
       return true;
     });
   }, [filters, selectedPrefectureProperties]);
@@ -359,6 +367,27 @@ const ExplorePage = () => {
 
     return list;
   }, [filteredProperties, sortBy]);
+
+  const exploreStateSnapshot = useMemo(
+    () => ({
+      currentStep,
+      selectedRegion,
+      selectedPrefecture,
+      selectedProperty,
+      filters,
+      sortBy,
+      showMapFilters,
+    }),
+    [
+      currentStep,
+      selectedRegion,
+      selectedPrefecture,
+      selectedProperty,
+      filters,
+      sortBy,
+      showMapFilters,
+    ],
+  );
 
   const handleRegionSelect = (region) => {
     setSelectedRegion(region);
@@ -435,6 +464,7 @@ const ExplorePage = () => {
           selectedRegion={selectedRegion}
           selectedPrefecture={selectedPrefecture}
           properties={sortedProperties}
+          exploreStateSnapshot={exploreStateSnapshot}
           selectedProperty={selectedProperty}
           onHoverProperty={setSelectedProperty}
           filters={filters}
@@ -468,6 +498,7 @@ const ExplorePage = () => {
               amenitySourceProperties={currentStep >= 3 ? selectedPrefectureProperties : []}
               selectedProperty={selectedProperty}
               filters={filters}
+              exploreStateSnapshot={exploreStateSnapshot}
               showMapFilters={showMapFilters}
               priceBounds={priceBounds}
               onFilterChange={setFilters}
