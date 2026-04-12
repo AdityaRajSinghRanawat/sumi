@@ -120,44 +120,35 @@ npm run lint
 	Click any screenshot to open it in full size.
 </p>
 
-<table>
-	<tr>
-		<td align="center" width="50%">
-			<a href="screenshots/home-page.png">
-				<img src="screenshots/home-page.png" alt="Home Page" width="100%" />
-			</a>
-			<p><strong>Home Page</strong></p>
-		</td>
-		<td align="center" width="50%">
-			<a href="screenshots/region-selection.png">
-				<img src="screenshots/region-selection.png" alt="Region Selection" width="100%" />
-			</a>
-			<p><strong>Region Selection</strong></p>
-		</td>
-	</tr>
-	<tr>
-		<td align="center" width="50%">
-			<a href="screenshots/prefecture-selection.png">
-				<img src="screenshots/prefecture-selection.png" alt="Prefecture Selection" width="100%" />
-			</a>
-			<p><strong>Prefecture Selection</strong></p>
-		</td>
-		<td align="center" width="50%">
-			<a href="screenshots/house-selection.png">
-				<img src="screenshots/house-selection.png" alt="House Selection" width="100%" />
-			</a>
-			<p><strong>House Selection</strong></p>
-		</td>
-	</tr>
-</table>
+### Home Page
 
-<p align="center">
-	<a href="screenshots/house-profile-page.png">
-		<img src="screenshots/house-profile-page.png" alt="House Profile Page" width="75%" />
-	</a>
-</p>
+<a href="screenshots/home-page.png">
+	<img src="screenshots/home-page.png" alt="Home Page" width="100%" />
+</a>
 
-<p align="center"><strong>House Profile Page</strong></p>
+### Region Selection
+
+<a href="screenshots/region-selection.png">
+	<img src="screenshots/region-selection.png" alt="Region Selection" width="100%" />
+</a>
+
+### Prefecture Selection
+
+<a href="screenshots/prefecture-selection.png">
+	<img src="screenshots/prefecture-selection.png" alt="Prefecture Selection" width="100%" />
+</a>
+
+### House Selection
+
+<a href="screenshots/house-selection.png">
+	<img src="screenshots/house-selection.png" alt="House Selection" width="100%" />
+</a>
+
+### House Profile Page
+
+<a href="screenshots/house-profile-page.png">
+	<img src="screenshots/house-profile-page.png" alt="House Profile Page" width="100%" />
+</a>
 
 ## Notes
 
