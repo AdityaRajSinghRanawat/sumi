@@ -1,16 +1,165 @@
-# React + Vite
+<h1 align="center">Sumi</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+	A map-first home discovery experience for Japan that blends location, safety context, and livability signals.
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+	<a href="#product-journey">Journey</a> •
+	<a href="#why-sumi">Why Sumi</a> •
+	<a href="#feature-highlights">Features</a> •
+	<a href="#screenshots">Screenshots</a> •
+	<a href="#getting-started">Getting Started</a>
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<table align="center">
+	<tr>
+		<td><strong>Map-first discovery</strong></td>
+		<td><strong>Risk-aware insights</strong></td>
+		<td><strong>Region to home flow</strong></td>
+	</tr>
+	<tr>
+		<td>Explore homes spatially, not as flat lists.</td>
+		<td>Compare earthquake risk, elevation, and nearby essentials.</td>
+		<td>Move from region, to prefecture, to detailed listing decisions.</td>
+	</tr>
+</table>
 
-## React Compiler
+Most property sites optimize for price comparison but hide context. Sumi solves this by surfacing local risk and quality-of-life signals in the same place users compare homes.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Product Journey
 
-## Expanding the ESLint configuration
+1. Start from a high-level region view of Japan.
+2. Narrow down to prefectures that match your comfort and lifestyle.
+3. Compare homes on an interactive map with filters that matter.
+4. Open detailed property profiles with safety and accessibility context.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Why Sumi
+
+- Context over clutter: evaluate homes with regional and environmental signals, not only price.
+- Guided discovery: move naturally from broad location decisions to property-level decisions.
+- Safety-aware exploration: include earthquake risk, elevation cues, and nearby facilities in the decision flow.
+- Practical filtering: shortlist by budget, room count, station distance, and amenity availability.
+
+## Feature Highlights
+
+- Interactive map exploration powered by Leaflet and React Leaflet.
+- Region and prefecture-aware discovery using GeoJSON boundaries.
+- Risk and livability signals, including earthquake risk, elevation level, and safety score.
+- Smart filtering and sorting by price, rooms, station distance, risk, elevation, and amenities.
+- Multi-page flow with dedicated Home, Explore, Property Detail, List Property, and Admin pages.
+- Local data layer with seeded properties and user-added custom listings.
+
+<details>
+	<summary><strong>Interactive Walkthrough</strong></summary>
+
+1. Start at the home page to understand the exploration model.
+2. Select a region to narrow the national search surface.
+3. Move into prefecture-level exploration and compare options.
+4. Open a house profile and evaluate risk and access context.
+
+</details>
+
+## Tech Stack
+
+- React (Vite)
+- React Router
+- Leaflet + React Leaflet
+- Tailwind CSS
+- ESLint
+
+## Project Structure
+
+```
+src/
+	components/
+		explore/
+		map/
+	data/
+	localdb/
+	pages/
+	router/
+	utils/
+```
+
+## Getting Started
+
+### 1) Install dependencies
+
+```bash
+npm install
+```
+
+### 2) Run development server
+
+```bash
+npm run dev
+```
+
+### 3) Build for production
+
+```bash
+npm run build
+```
+
+### 4) Preview production build
+
+```bash
+npm run preview
+```
+
+### 5) Lint
+
+```bash
+npm run lint
+```
+
+## Screenshots
+
+<p>
+	Click any screenshot to open it in full size.
+</p>
+
+<table>
+	<tr>
+		<td align="center" width="50%">
+			<a href="screenshots/home-page.png">
+				<img src="screenshots/home-page.png" alt="Home Page" width="100%" />
+			</a>
+			<p><strong>Home Page</strong></p>
+		</td>
+		<td align="center" width="50%">
+			<a href="screenshots/region-selection.png">
+				<img src="screenshots/region-selection.png" alt="Region Selection" width="100%" />
+			</a>
+			<p><strong>Region Selection</strong></p>
+		</td>
+	</tr>
+	<tr>
+		<td align="center" width="50%">
+			<a href="screenshots/prefecture-selection.png">
+				<img src="screenshots/prefecture-selection.png" alt="Prefecture Selection" width="100%" />
+			</a>
+			<p><strong>Prefecture Selection</strong></p>
+		</td>
+		<td align="center" width="50%">
+			<a href="screenshots/house-selection.png">
+				<img src="screenshots/house-selection.png" alt="House Selection" width="100%" />
+			</a>
+			<p><strong>House Selection</strong></p>
+		</td>
+	</tr>
+</table>
+
+<p align="center">
+	<a href="screenshots/house-profile-page.png">
+		<img src="screenshots/house-profile-page.png" alt="House Profile Page" width="75%" />
+	</a>
+</p>
+
+<p align="center"><strong>House Profile Page</strong></p>
+
+## Notes
+
+- Property data is seeded and enriched at runtime (region, safety, elevation, and overall score).
+- Additional custom properties are persisted via local storage-backed localdb helpers.
