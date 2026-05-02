@@ -3,7 +3,7 @@ import RegionLayer from "./RegionLayer";
 import PropertyLayer from "./PropertyLayer";
 import AmenityLayer from "./AmenityLayer";
 
-const mapCenter = [37.5, 138.2];
+const mapCenter = [35.9, 134.6];
 
 const formatCompactYen = (amount) => {
   if (amount >= 1_000_000) {
@@ -50,8 +50,8 @@ const MapView = ({
       <MapContainer
         key={mapResetToken}
         center={mapCenter}
-        zoom={5.2}
-        minZoom={4.5}
+        zoom={4.5}
+        minZoom={4.0}
         maxZoom={12}
         className="h-full w-full"
       >

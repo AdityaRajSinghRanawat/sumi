@@ -132,7 +132,7 @@ const regionLabelCenters = {
   Chugoku: [34.5, 132.1],
   Shikoku: [33.5, 133.6],
   Kyushu: [32.8, 130.1],
-  Okinawa: [25.5, 128.0],
+  Okinawa: [25.8, 126.9],
 };
 
 const regionViewCenters = {
