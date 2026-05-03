@@ -302,14 +302,26 @@ export default function ColorBends({
 
     const handlePointerMove = e => {
       const rect = container.getBoundingClientRect();
+      const withinX = e.clientX >= rect.left && e.clientX <= rect.right;
+      const withinY = e.clientY >= rect.top && e.clientY <= rect.bottom;
+      if (!withinX || !withinY) {
+        pointerTargetRef.current.set(0, 0);
+        return;
+      }
       const x = ((e.clientX - rect.left) / (rect.width || 1)) * 2 - 1;
       const y = -(((e.clientY - rect.top) / (rect.height || 1)) * 2 - 1);
       pointerTargetRef.current.set(x, y);
     };
 
-    container.addEventListener('pointermove', handlePointerMove);
+    const handlePointerLeave = () => {
+      pointerTargetRef.current.set(0, 0);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('pointerleave', handlePointerLeave);
     return () => {
-      container.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerleave', handlePointerLeave);
     };
   }, []);
 

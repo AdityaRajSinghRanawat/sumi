@@ -5,6 +5,7 @@ interface AuroraTextProps {
   className?: string
   colors?: string[]
   speed?: number
+  angle?: number
 }
 
 export const AuroraText = memo(
@@ -13,11 +14,10 @@ export const AuroraText = memo(
     className = "",
     colors = ["#8b5cf6", "#d946ef", "#ff4d6d"],
     speed = 1,
+    angle = 135,
   }: AuroraTextProps) => {
     const gradientStyle = {
-      backgroundImage: `linear-gradient(135deg, ${colors.join(", ")}, ${
-        colors[0]
-      })`,
+      backgroundImage: `linear-gradient(${angle}deg, ${colors.join(", ")}, ${colors[0]})`,
       WebkitBackgroundClip: "text",
       WebkitTextFillColor: "transparent",
       backgroundSize: "200% auto",

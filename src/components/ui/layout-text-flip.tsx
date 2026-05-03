@@ -45,36 +45,38 @@ export const LayoutTextFlip = ({
       <motion.span
         layout
         className={cn(
-          "relative w-fit overflow-hidden rounded-2xl border border-white/12 bg-[linear-gradient(180deg,rgba(6,11,23,0.82)_0%,rgba(9,14,31,0.72)_100%)] px-5 py-3 font-sans text-2xl font-bold tracking-tight text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_48px_rgba(0,0,0,0.42)] ring-1 ring-white/10 backdrop-blur-2xl backdrop-saturate-150 md:text-4xl",
+          "relative w-fit overflow-visible rounded-2xl border border-white/12 bg-[linear-gradient(180deg,rgba(6,11,23,0.82)_0%,rgba(9,14,31,0.72)_100%)] px-5 py-3 font-sans text-2xl font-bold tracking-tight text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_48px_rgba(0,0,0,0.42)] ring-1 ring-white/10 backdrop-blur-2xl backdrop-saturate-150 md:text-4xl",
           wordContainerClassName,
         )}
       >
-        <AnimatePresence mode="popLayout">
-          <motion.span
-            key={currentIndex}
-            initial={{ y: -40, filter: "blur(10px)" }}
-            animate={{
-              y: 0,
-              filter: "blur(0px)",
-            }}
-            exit={{ y: 50, filter: "blur(10px)", opacity: 0 }}
-            transition={{
-              duration: 0.5,
-            }}
-            className={cn("inline-block whitespace-nowrap drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]", wordClassName)}
-            style={(() => {
-              const wc = wordColors && wordColors[currentIndex];
-              if (!wc || !wc.length) return undefined;
-              return {
-                backgroundImage: `linear-gradient(90deg, ${wc.join(',')})`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              };
-            })()}
-          >
-            {words[currentIndex]}
-          </motion.span>
-        </AnimatePresence>
+        <span className="relative inline-grid place-items-center overflow-visible">
+          <AnimatePresence mode="popLayout">
+            <motion.span
+              key={currentIndex}
+              initial={{ y: -40, filter: "blur(10px)" }}
+              animate={{
+                y: 0,
+                filter: "blur(0px)",
+              }}
+              exit={{ y: 50, filter: "blur(10px)", opacity: 0 }}
+              transition={{
+                duration: 0.5,
+              }}
+              className={cn("inline-flex items-center whitespace-nowrap px-[0.12em] py-[0.12em] -mx-[0.12em] -my-[0.12em] leading-[1.24] [text-rendering:geometricPrecision] drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]", wordClassName)}
+              style={(() => {
+                const wc = wordColors && wordColors[currentIndex];
+                if (!wc || !wc.length) return undefined;
+                return {
+                  backgroundImage: `linear-gradient(90deg, ${wc.join(',')})`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                };
+              })()}
+            >
+              {words[currentIndex]}
+            </motion.span>
+          </AnimatePresence>
+        </span>
       </motion.span>
     </>
   );
