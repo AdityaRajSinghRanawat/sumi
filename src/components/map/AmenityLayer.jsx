@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Marker, Popup, Tooltip } from "react-leaflet";
 import { divIcon } from "leaflet";
+import { useNavigate } from "react-router-dom";
 import japanRegionsRaw from "../../data/japanRegions.geojson?raw";
 import { getPropertyFallbackImage } from "../../utils/propertyImage";
 import { formatSafetyScoreLabel } from "../../utils/safetyScore";
@@ -284,6 +285,7 @@ const buildGenericAmenities = (properties, visibleTypes, ring, prefectureName) =
 const AmenityLayer = ({ properties, exploreStateSnapshot, selectedPrefecture, filters }) => {
   if (!selectedPrefecture) return null;
   const [selectedAmenityId, setSelectedAmenityId] = useState(null);
+  const navigate = useNavigate();
 
   const openProperty = (property) => {
     try {
@@ -292,7 +294,12 @@ const AmenityLayer = ({ properties, exploreStateSnapshot, selectedPrefecture, fi
       // Ignore storage quota/private mode issues and still attempt navigation.
     }
 
-    window.open(`/property/${property.id}`, "_blank", "noopener,noreferrer");
+    navigate(`/property/${property.id}`, {
+      state: {
+        property,
+        exploreStateSnapshot,
+      },
+    });
   };
 
   const selectedAmenityTypes = Object.entries(filters?.amenities || {})

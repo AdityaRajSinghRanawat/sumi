@@ -1,5 +1,6 @@
 import { divIcon } from "leaflet";
 import { Marker, Popup, Tooltip } from "react-leaflet";
+import { useNavigate } from "react-router-dom";
 import { getPropertyFallbackImage } from "../../utils/propertyImage";
 import { formatSafetyScoreLabel } from "../../utils/safetyScore";
 
@@ -16,6 +17,8 @@ const formatPinPrice = (amount) => {
 };
 
 const PropertyLayer = ({ properties, exploreStateSnapshot, selectedProperty, onSelectProperty }) => {
+  const navigate = useNavigate();
+
   const openProperty = (property) => {
     try {
       localStorage.setItem(`sumi.propertyCache.${property.id}`, JSON.stringify(property));
@@ -23,7 +26,12 @@ const PropertyLayer = ({ properties, exploreStateSnapshot, selectedProperty, onS
       // Ignore storage quota/private mode issues and still attempt navigation.
     }
 
-    window.open(`/property/${property.id}`, "_blank", "noopener,noreferrer");
+    navigate(`/property/${property.id}`, {
+      state: {
+        property,
+        exploreStateSnapshot,
+      },
+    });
   };
 
   return (

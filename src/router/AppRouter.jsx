@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import ExplorePage from "../pages/ExplorePage";
 import ListPropertyPage from "../pages/ListPropertyPage";
@@ -12,6 +12,7 @@ const AppRouter = () => {
       <Route path="/explore" element={<ExplorePage />} />
       <Route path="/property/:propertyId" element={<PropertyDetailPage />} />
       <Route path="/list-property" element={<ListPropertyPage />} />
+      <Route path="/list-property4" element={<Navigate to="/list-property"/>} />
       <Route path="/admin" element={<AdminPage />} />
     </Routes>
   )

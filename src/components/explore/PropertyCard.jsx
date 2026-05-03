@@ -1,5 +1,6 @@
 import { getPropertyFallbackImage } from "../../utils/propertyImage";
 import { formatSafetyScoreLabel } from "../../utils/safetyScore";
+import { useNavigate } from "react-router-dom";
 
 const yen = new Intl.NumberFormat("ja-JP", {
   style: "currency",
@@ -8,6 +9,7 @@ const yen = new Intl.NumberFormat("ja-JP", {
 });
 
 const PropertyCard = ({ property, exploreStateSnapshot, isActive, onHover }) => {
+  const navigate = useNavigate();
   const tags = property.tags?.slice(0, 2) || [];
 
   const openProperty = () => {
@@ -17,7 +19,12 @@ const PropertyCard = ({ property, exploreStateSnapshot, isActive, onHover }) => 
       // Ignore storage quota/private mode issues and still attempt navigation.
     }
 
-    window.open(`/property/${property.id}`, "_blank", "noopener,noreferrer");
+    navigate(`/property/${property.id}`, {
+      state: {
+        property,
+        exploreStateSnapshot,
+      },
+    });
   };
 
   return (
