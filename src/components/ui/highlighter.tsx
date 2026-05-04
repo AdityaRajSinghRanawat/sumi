@@ -34,16 +34,16 @@ export function Highlighter({
   iterations = 2,
   padding = 2,
   multiline = true,
-  isView = false,
+  isView = true,
 }: HighlighterProps) {
   const elementRef = useRef<HTMLSpanElement>(null)
 
   const isInView = useInView(elementRef, {
     once: true,
-    margin: "-10%",
+    margin: "0px 0px -50% 0px",
   })
 
-  // If isView is false, always show. If isView is true, wait for inView
+  // When isView is true, wait until the element enters the viewport.
   const shouldShow = !isView || isInView
 
   useLayoutEffect(() => {
