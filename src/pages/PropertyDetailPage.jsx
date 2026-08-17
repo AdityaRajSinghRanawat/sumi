@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getCustomPropertiesFromLocalStorage, getSeedProperties } from "../localdb";
+import { buildMockContact, ensurePropertyContact } from "../utils/propertyContact";
 import { getPropertyFallbackImage } from "../utils/propertyImage";
 import { formatSafetyScoreLabel } from "../utils/safetyScore";
 
@@ -44,7 +46,22 @@ const PropertyDetailPage = () => {
 
   const fallbackPool = [...getSeedProperties(), ...getCustomPropertiesFromLocalStorage()];
   const fallbackProperty = fallbackPool.find((item) => item.id === propertyId);
-  const property = fromState || cachedProperty || fallbackProperty || null;
+  const property = ensurePropertyContact(fromState || cachedProperty || fallbackProperty || null);
+
+  useEffect(() => {
+    const storedDetailState = window.sessionStorage.getItem("sumi.detailState");
+    if (!storedDetailState) return;
+
+    try {
+      const parsed = JSON.parse(storedDetailState);
+      if (parsed?.property?.id === propertyId) {
+        const withContact = ensurePropertyContact(parsed.property);
+        localStorage.setItem(`sumi.propertyCache.${propertyId}`, JSON.stringify(withContact));
+      }
+    } catch {
+      // Ignore parse or storage issues.
+    }
+  }, [propertyId]);
 
   if (!property) {
     return (
@@ -69,6 +86,7 @@ const PropertyDetailPage = () => {
   }
 
   const tags = property.tags?.slice(0, 4) || [];
+  const contact = property.contact || buildMockContact(property);
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_10%_10%,#14171d_0%,#0b0c10_45%,#020202_100%)] px-4 py-4 text-zinc-100 lg:px-6 lg:py-5">
@@ -139,6 +157,40 @@ const PropertyDetailPage = () => {
               <div className="rounded-lg border border-zinc-700 bg-zinc-950/70 px-2 py-2">
                 <p className="m-0 text-xs text-zinc-400">Hospitals</p>
                 <p className="m-0 text-lg font-semibold text-zinc-100">{property.nearby?.hospitals || 0}</p>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-xl border border-zinc-700 bg-zinc-950/70 p-3">
+              <p className="m-0 text-xs uppercase tracking-[0.14em] text-zinc-400">Contact</p>
+              <div className="mt-3 space-y-2 text-sm text-zinc-200">
+                <div>
+                  <p className="m-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">Agent</p>
+                  <p className="m-0 font-medium text-zinc-50">{contact.agentName}</p>
+                </div>
+                <div>
+                  <p className="m-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">Company</p>
+                  <p className="m-0 font-medium text-zinc-50">{contact.company}</p>
+                </div>
+                <div>
+                  <p className="m-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">Phone</p>
+                  <a href={`tel:${contact.phone.replace(/\s+/g, "")}`} className="m-0 inline-block font-medium text-sky-300 hover:text-sky-200">
+                    {contact.phone}
+                  </a>
+                </div>
+                <div>
+                  <p className="m-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">Email</p>
+                  <a href={`mailto:${contact.email}`} className="m-0 inline-block font-medium text-sky-300 hover:text-sky-200">
+                    {contact.email}
+                  </a>
+                </div>
+                <div>
+                  <p className="m-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">Office</p>
+                  <p className="m-0 font-medium text-zinc-50">{contact.officeLocation}</p>
+                </div>
+                <div>
+                  <p className="m-0 text-[10px] uppercase tracking-[0.12em] text-zinc-500">Availability</p>
+                  <p className="m-0 font-medium text-zinc-50">{contact.availability}</p>
+                </div>
               </div>
             </div>
           </div>

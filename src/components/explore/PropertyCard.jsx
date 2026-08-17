@@ -1,6 +1,5 @@
 import { getPropertyFallbackImage } from "../../utils/propertyImage";
 import { formatSafetyScoreLabel } from "../../utils/safetyScore";
-import { useNavigate } from "react-router-dom";
 
 const yen = new Intl.NumberFormat("ja-JP", {
   style: "currency",
@@ -9,22 +8,35 @@ const yen = new Intl.NumberFormat("ja-JP", {
 });
 
 const PropertyCard = ({ property, exploreStateSnapshot, isActive, onHover }) => {
-  const navigate = useNavigate();
   const tags = property.tags?.slice(0, 2) || [];
 
-  const openProperty = () => {
+  const openProperty = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     try {
       localStorage.setItem(`sumi.propertyCache.${property.id}`, JSON.stringify(property));
     } catch {
       // Ignore storage quota/private mode issues and still attempt navigation.
     }
 
-    navigate(`/property/${property.id}`, {
-      state: {
-        property,
-        exploreStateSnapshot,
-      },
-    });
+    const route = `${window.location.origin}/property/${property.id}`;
+    const detailState = {
+      property,
+      exploreStateSnapshot,
+    };
+
+    const targetWindow = window.open(route, "_blank", "noopener,noreferrer");
+
+    if (targetWindow) {
+      try {
+        targetWindow.sessionStorage.setItem("sumi.detailState", JSON.stringify(detailState));
+      } catch {
+        // Ignore private mode/session issues and rely on the URL-based detail refresh.
+      }
+    }
   };
 
   return (
@@ -42,7 +54,8 @@ const PropertyCard = ({ property, exploreStateSnapshot, isActive, onHover }) => 
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          openProperty();
+          event.stopPropagation();
+          openProperty(event);
         }
       }}
     >

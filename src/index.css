@@ -149,12 +149,33 @@ body {
 }
 
 .sumi-scroll {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 178, 198, 0.7) transparent;
+  -ms-overflow-style: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 .sumi-scroll::-webkit-scrollbar {
-  display: none;
+  width: 8px;
+  height: 8px;
+}
+
+.sumi-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sumi-scroll::-webkit-scrollbar-thumb {
+  background: rgba(168, 178, 198, 0.55);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.sumi-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 178, 198, 0.8);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 .leaflet-tooltip.sumi-pin-tooltip {

@@ -1,6 +1,5 @@
 import { divIcon } from "leaflet";
 import { Marker, Popup, Tooltip } from "react-leaflet";
-import { useNavigate } from "react-router-dom";
 import { getPropertyFallbackImage } from "../../utils/propertyImage";
 import { formatSafetyScoreLabel } from "../../utils/safetyScore";
 
@@ -17,21 +16,33 @@ const formatPinPrice = (amount) => {
 };
 
 const PropertyLayer = ({ properties, exploreStateSnapshot, selectedProperty, onSelectProperty }) => {
-  const navigate = useNavigate();
+  const openProperty = (property, event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
-  const openProperty = (property) => {
     try {
       localStorage.setItem(`sumi.propertyCache.${property.id}`, JSON.stringify(property));
     } catch {
       // Ignore storage quota/private mode issues and still attempt navigation.
     }
 
-    navigate(`/property/${property.id}`, {
-      state: {
-        property,
-        exploreStateSnapshot,
-      },
-    });
+    const route = `${window.location.origin}/property/${property.id}`;
+    const detailState = {
+      property,
+      exploreStateSnapshot,
+    };
+
+    const targetWindow = window.open(route, "_blank", "noopener,noreferrer");
+
+    if (targetWindow) {
+      try {
+        targetWindow.sessionStorage.setItem("sumi.detailState", JSON.stringify(detailState));
+      } catch {
+        // Ignore private mode/session issues and rely on the URL-based detail refresh.
+      }
+    }
   };
 
   return (
@@ -75,11 +86,12 @@ const PropertyLayer = ({ properties, exploreStateSnapshot, selectedProperty, onS
                 className="sumi-popup-card cursor-pointer"
                 role="button"
                 tabIndex={0}
-                onClick={() => openProperty(property)}
+                onClick={(event) => openProperty(property, event)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    openProperty(property);
+                    event.stopPropagation();
+                    openProperty(property, event);
                   }
                 }}
               >
@@ -128,8 +140,9 @@ const PropertyLayer = ({ properties, exploreStateSnapshot, selectedProperty, onS
                     type="button"
                     className="mt-2 inline-flex items-center rounded-full border border-zinc-600 bg-zinc-900/90 px-3 py-1 text-[11px] font-semibold text-zinc-100 transition hover:border-zinc-400"
                     onClick={(event) => {
+                      event.preventDefault();
                       event.stopPropagation();
-                      openProperty(property);
+                      openProperty(property, event);
                     }}
                   >
                     Visit Property

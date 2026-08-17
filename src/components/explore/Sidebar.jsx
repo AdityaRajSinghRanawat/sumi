@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropertyCard from "./PropertyCard";
 
 const CustomDualSlider = ({ min, max, step, values, onChange }) => {
@@ -92,12 +92,29 @@ const Sidebar = ({
   onBackToRegionSelection,
 }) => {
   const [activeControl, setActiveControl] = useState(null);
+  const propertyListRef = useRef(null);
 
   useEffect(() => {
     if (currentStep === 3) {
       setActiveControl(null);
     }
   }, [currentStep]);
+
+  const handlePropertyListWheel = (event) => {
+    const node = propertyListRef.current;
+    if (!node) return;
+
+    const atTop = node.scrollTop <= 0 && event.deltaY < 0;
+    const atBottom =
+      node.scrollTop + node.clientHeight >= node.scrollHeight - 1 && event.deltaY > 0;
+
+    if (atTop || atBottom) {
+      return;
+    }
+
+    event.preventDefault();
+    node.scrollTop += event.deltaY;
+  };
 
   return (
     <aside className="flex min-h-0 flex-col rounded-2xl border border-zinc-700/80 bg-linear-to-br from-zinc-900/95 via-zinc-900/90 to-zinc-950/95 p-4 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur">
@@ -534,14 +551,18 @@ const Sidebar = ({
           )}
 
           {/* Properties List */}
-          <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-zinc-700/70 bg-zinc-950/70">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-zinc-700/70 bg-zinc-950/70">
             <div className="border-b border-zinc-700/70 px-3 py-2">
               <p className="m-0 text-sm font-semibold text-zinc-100">
                 {properties.length} properties found
               </p>
             </div>
 
-            <div className="sumi-scroll min-h-0 h-full overflow-y-auto p-3 pb-6">
+            <div
+              ref={propertyListRef}
+              className="sumi-scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 pb-6 overscroll-contain touch-pan-y"
+              onWheel={handlePropertyListWheel}
+            >
               {properties.length === 0 ? (
                 <p className="m-0 text-sm text-zinc-400">
                   No properties match the current filters.

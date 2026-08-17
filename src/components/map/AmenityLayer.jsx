@@ -285,21 +285,34 @@ const buildGenericAmenities = (properties, visibleTypes, ring, prefectureName) =
 const AmenityLayer = ({ properties, exploreStateSnapshot, selectedPrefecture, filters }) => {
   if (!selectedPrefecture) return null;
   const [selectedAmenityId, setSelectedAmenityId] = useState(null);
-  const navigate = useNavigate();
 
-  const openProperty = (property) => {
+  const openProperty = (property, event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     try {
       localStorage.setItem(`sumi.propertyCache.${property.id}`, JSON.stringify(property));
     } catch {
       // Ignore storage quota/private mode issues and still attempt navigation.
     }
 
-    navigate(`/property/${property.id}`, {
-      state: {
-        property,
-        exploreStateSnapshot,
-      },
-    });
+    const route = `${window.location.origin}/property/${property.id}`;
+    const detailState = {
+      property,
+      exploreStateSnapshot,
+    };
+
+    const targetWindow = window.open(route, "_blank", "noopener,noreferrer");
+
+    if (targetWindow) {
+      try {
+        targetWindow.sessionStorage.setItem("sumi.detailState", JSON.stringify(detailState));
+      } catch {
+        // Ignore private mode/session issues and rely on the URL-based detail refresh.
+      }
+    }
   };
 
   const selectedAmenityTypes = Object.entries(filters?.amenities || {})
